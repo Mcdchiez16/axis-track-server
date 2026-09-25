@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${TRACCAR_DB_NAME}
+      POSTGRES_USER: ${TRACCAR_DB_USER}
+      POSTGRES_PASSWORD: ${TRACCAR_DB_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  traccar:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      CONFIG_USE_ENVIRONMENT_VARIABLES: "true"
+      DATABASE_DRIVER: org.postgresql.Driver
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${TRACCAR_DB_NAME}?tcpKeepAlive=true
+      DATABASE_USER: ${TRACCAR_DB_USER}
+      DATABASE_PASSWORD: ${TRACCAR_DB_PASS}
+      LOGGER_CONSOLE: "true"
+      WEB_URL: ${TRACCAR_PUBLIC_URL}
+    ports:
+      - "8082:8082"
+      - "5023:5023/tcp"
+      - "5023:5023/udp"
+      - "5027:5027/tcp"
+      - "5027:5027/udp"
+      - "5055:5055/tcp"
+    volumes:
+      - traccar_data:/opt/traccar/data
+      - traccar_media:/opt/traccar/media
+
+volumes:
+  postgres_data:
+  traccar_data:
+  traccar_media:

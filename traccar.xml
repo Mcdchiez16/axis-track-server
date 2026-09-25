@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+    <entry key='config.default'>./conf/default.xml</entry>
+
+    <!-- ── Database (PostgreSQL) ──────────────────────────────── -->
+    <entry key='database.driver'>org.postgresql.Driver</entry>
+    <!-- Docker Compose overrides these values from environment variables. -->
+    <entry key='database.url'>jdbc:postgresql://postgres:5432/traccar?tcpKeepAlive=true</entry>
+    <entry key='database.user'>traccar</entry>
+    <entry key='database.password'></entry>
+
+    <!-- Require devices to be registered by an administrator. -->
+    <entry key='database.registerUnknown'>false</entry>
+
+    <!-- ── Connection keepalive & timeout tuning ─────────────── -->
+    <!-- Prevents devices from dropping after short idle periods  -->
+    <entry key='server.timeout'>600</entry>
+
+    <!-- ── GPS Protocols ─────────────────────────────────────── -->
+
+    <!-- Teltonika FMC920 / FMB920 / FMC640 — DRC device (port 5027) -->
+    <entry key='teltonika.port'>5027</entry>
+
+    <!-- Navara — Jimi IoT VL103M (GT06/Concox protocol, port 5023)   -->
+    <!-- SMS config cmd: SERVER,1,gps.devaxis.co.zm,5023,0#           -->
+    <entry key='gt06.port'>5023</entry>
+
+    <!-- Osmand HTTP simulator / HTTP-based trackers (port 5055) -->
+    <entry key='osmand.port'>5055</entry>
+
+    <!-- ── Webhook forwarding (optional) ─────────────────────── -->
+    <!-- Uncomment to forward positions to your backend API:         -->
+    <!-- <entry key='forward.type'>json</entry>                      -->
+    <!-- <entry key='forward.url'>https://tracker.devaxis.co.zm/api/tracker/webhook</entry> -->
+
+</properties>
